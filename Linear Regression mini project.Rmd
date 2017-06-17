@@ -1,0 +1,100 @@
+---
+title: "Linear Regression Mini Project"
+output: html_document
+---
+
+# Load the states data
+# ────────────────────────
+
+# read the states data
+```{r}
+states.data <- readRDS("dataSets/states.rds") 
+```
+
+## Exercise: least squares regression
+## ────────────────────────────────────────
+
+##   Use the /states.rds/ data set. Fit a model predicting energy consumed
+##   per capita (energy) from the percentage of residents living in
+##   metropolitan areas (metro). Be sure to
+##   1. Examine/plot the data before fitting the model
+```{r}
+
+sts.en.me <- states.data %>% select(expense, metro)
+plot(sts.en.me)
+```
+
+##   2. Print and interpret the model `summary'
+```{r}
+ex.me.mod <- lm(expense ~ metro, data = states.data)
+summary(ex.me.mod)
+```
+
+##   3. `plot' the model to look for deviations from modeling assumptions
+```{r}
+plot(ex.me.mod)
+ex.me.mod1 <- lm(energy ~ metro, data = states.data)
+plot(ex.me.mod1)
+```
+
+##   Select one or more additional predictors to add to your model and
+##   repeat steps 1-3. Is this model significantly better than the model
+##   with /metro/ as the only predictor?
+## with metro, population, area, waste, toxic and green
+```{r}
+ex.me.mod2 <- lm(energy ~ metro + pop + area + waste + toxic + green, data = states.data)
+summary(ex.me.mod2)
+```
+
+
+# Removed pop as it had the highest p value
+```{r}
+ex.me.mod3 <- lm(energy ~ metro + area + waste + toxic + green, data = states.data)
+summary(ex.me.mod3)
+```
+
+
+# Removed waste as it had the higest p value
+```{r}
+ex.me.mod4 <- lm(energy ~ metro + area + toxic + green, data = states.data)
+summary(ex.me.mod4)
+```
+
+
+# Removed metro as it had the higest p value
+```{r}
+ex.me.mod5 <- lm(energy ~ area + toxic + green, data = states.data)
+summary(ex.me.mod5)
+```
+
+
+# Removed area as it had the higest p value
+```{r}
+ex.me.mod6 <- lm(energy ~ toxic + green, data = states.data)
+summary(ex.me.mod6)
+```
+
+
+## Exercise: interactions and factors
+## ────────────────────────────────────────
+
+##   Use the states data set.
+
+##   1. Add on to the regression equation that you created in exercise 1 by
+##      generating an interaction term and testing the interaction.
+
+```{r}
+ex.me.mod6.tox.gre <- lm(energy ~ toxic*green, data = states.data)
+coef(Summary(ex.me.mod6.tox.gre))
+```
+
+##   2. Try adding region to the model. Are there significant differences
+##      across the four regions?
+
+```{r}
+ex.me.mod7 <- lm(energy ~ region + green + toxic, data = states.data)
+summary(ex.me.mod7)
+```
+
+# Since the adjusted R squared value reduces and there are no stars assigned to P value for region, adding region does not seem to affect the dependable variable energy.
+
